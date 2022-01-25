@@ -18,6 +18,7 @@ using Nucs.JsonSettings.Modulation;
 using Nucs.JsonSettings.Modulation.Recovery;
 using MessageBox = HandyControl.Controls.MessageBox;
 using Path = System.IO.Path;
+using HandyWinget.Resources.Lang;
 
 namespace HandyWinget.Common
 {
@@ -297,8 +298,9 @@ namespace HandyWinget.Common
                         UseShellExecute = false,
                         RedirectStandardOutput = true,
                         CreateNoWindow = true,
+                        StandardOutputEncoding = System.Text.Encoding.UTF8,
                         FileName = "winget",
-                        Arguments = $"list"
+                        Arguments = $"list",
                     }
             };
             p.Start();
@@ -311,7 +313,16 @@ namespace HandyWinget.Common
             }
             try
             {
-                string input = _wingetData.Substring(_wingetData.IndexOf("Name"));
+                string input = _wingetData.Substring(_wingetData.IndexOf(zH.KeyWGListName));
+                // "名称                                    ID                                           版本                可用    源"
+                
+                var title = input.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)[0];
+                var keys = title.Split(" ");
+                int[] indexes = { };
+                foreach (var key in keys)
+                {
+                    indexes.Append(title.IndexOfAny(key.ToCharArray()));
+                }
                 var lines = input.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).Skip(2);
                 return lines;
 
@@ -331,9 +342,19 @@ namespace HandyWinget.Common
         /// <returns></returns>
         public static (string packageId, string version, string availableVersion) ParseInstalledApp(string line, string packageId)
         {
-            line = Regex.Replace(line, "[ ]{2,}", " ", RegexOptions.IgnoreCase); // remove more than 2 spaces
-            line = Regex.Replace(line, $@".*(?=({Regex.Escape(packageId)}))", "", RegexOptions.IgnoreCase); // remove everythings before package id
-            var lines = line.Split(" ");
+            //line = Regex.Replace(line, "[ ]{2,}", " ", RegexOptions.IgnoreCase); // remove more than 2 spaces
+            //line = Regex.Replace(line, $@".*(?=({Regex.Escape(packageId)}))", "", RegexOptions.IgnoreCase); // remove everythings before package id
+            var temp = line.Trim().Split("\t");
+            string[] lines = { };
+            for (int i = 0; i < temp.Length; i++)
+            {
+                if (temp[i].Length != 0)
+                {
+                    lines.Append(temp[i]);
+                }
+            }
+
+            //var lines = line.Split(" ");
             if (lines.Count() >= 3) // available version exist
             {
                 return (packageId: lines[0], version: lines[1], availableVersion: lines[2]);

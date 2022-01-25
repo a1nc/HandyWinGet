@@ -6,20 +6,21 @@
         xmlns:hc="https://handyorg.github.io/handycontrol"
         xmlns:prism="http://prismlibrary.com/"
         xmlns:ui="http://schemas.modernwpf.com/2019"
+        xmlns:res="clr-namespace:HandyWinget.Resources.Lang"
         mc:Ignorable="d" Background="{DynamicResource AcrylicBackgroundFillColorBaseBrush}"
         Title="HandyWinGet" FontFamily="{StaticResource CascadiaCode}"
         WindowStartupLocation="CenterScreen"
         ui:WindowHelper.UseModernWindowStyle="True"
         ui:TitleBar.ExtendViewIntoTitleBar="True"
-        Height="600" 
+        Height="900" 
         Width="1200">
     <ui:NavigationView Name="navView" SelectionChanged="NavigationView_SelectionChanged" PaneTitle="HandyWinGet" AlwaysShowHeader="True" 
                        Header="{Binding SelectedItem.Content, RelativeSource={RelativeSource Mode=Self}}" IsSettingsVisible="False" FontFamily="{StaticResource CascadiaCode}"
                        IsBackButtonVisible="Collapsed">
         <ui:NavigationView.MenuItems>
-            <ui:NavigationViewItem Tag="GeneralView" Content="General">
+            <ui:NavigationViewItem Tag="CreatePackageView" Content="Create New Package">
                 <ui:NavigationViewItem.Icon>
-                    <ui:PathIcon Data="{DynamicResource GeneralGeometry}"/>
+                    <ui:PathIcon Data="{DynamicResource CreateGeometry}"/>
                 </ui:NavigationViewItem.Icon>
             </ui:NavigationViewItem>
             <ui:NavigationViewItem Tag="PackageView" Content="Packages">
@@ -27,9 +28,9 @@
                     <ui:PathIcon Data="{DynamicResource PackageGeometry}"/>
                 </ui:NavigationViewItem.Icon>
             </ui:NavigationViewItem>
-            <ui:NavigationViewItem Tag="CreatePackageView" Content="Create New Package">
+            <ui:NavigationViewItem Tag="GeneralView" Content="General">
                 <ui:NavigationViewItem.Icon>
-                    <ui:PathIcon Data="{DynamicResource CreateGeometry}"/>
+                    <ui:PathIcon Data="{DynamicResource GeneralGeometry}"/>
                 </ui:NavigationViewItem.Icon>
             </ui:NavigationViewItem>
         </ui:NavigationView.MenuItems>

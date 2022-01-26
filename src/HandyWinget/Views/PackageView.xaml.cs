@@ -301,29 +301,37 @@ namespace HandyWinget.Views
         private void LoadInstalledList(IProgress<int> progress, IEnumerable<HWGPackageModel> list)
         {
             var installedList = new ThreadSafeObservableCollection<HWGInstalledPackageModel>();
-            var installedAppList = GetInstalledAppList();
+            var installedAppList = GetInstalledAppList(); // pure strings array
 
             if (installedAppList == null)
             {
+                // HandyControl UI method
                 RunOnMainThread(() =>
                 {
-                    CreateInfoBarWithAction("Update Winget-Cli", "your Winget-cli is not supported please Update your winget-cli to version 1.0 or higher.", panelInstalled, Severity.Error, "Update", () =>
-                    {
-                        StartProcess(Consts.WingetRepository);
-                    });
+                    CreateInfoBarWithAction(
+                        "Update Winget-Cli",
+                        "your Winget-cli is not supported please Update your winget-cli to version 1.0 or higher.",
+                        panelInstalled,
+                        Severity.Error,
+                        "Update",
+                        () =>{StartProcess(Consts.WingetRepository);});
                 });
                 return;
             }
             var allPackages = list;
             var allPackagesCount = allPackages.Count();
             int currentItemIndex = 0;
-            foreach (var package in allPackages)
+            // FIXME: too much loops, need change outer and inner
+            foreach (var installedItem in installedAppList)
+                //foreach (var package in allPackages)
             {
                 currentItemIndex += 1;
-                progress.Report((currentItemIndex * 100 / allPackagesCount));
-                foreach (var installedItem in installedAppList)
+                progress.Report((currentItemIndex * 100 / installedAppList.Count()));
+                foreach (var package in allPackages)
+                //foreach (var installedItem in installedAppList)
                 {
                     var installedApp = ParseInstalledApp(installedItem, package.PackageId);
+                    // FIXME: app must have packageId or version? 
                     if (installedApp.packageId != null && installedApp.version != null)
                     {
                         if (package.PackageId.Equals(installedApp.packageId, StringComparison.OrdinalIgnoreCase))

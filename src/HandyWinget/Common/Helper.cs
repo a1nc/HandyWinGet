@@ -273,6 +273,7 @@ namespace HandyWinget.Common
         {
             try
             {
+                // FIXME: dont know how it works
                 var ps = new ProcessStartInfo(path)
                 {
                     UseShellExecute = true,
@@ -293,6 +294,7 @@ namespace HandyWinget.Common
         {
             var p = new Process
             {
+                // execute `winget list` in powershell
                 StartInfo =
                     {
                         UseShellExecute = false,
@@ -313,16 +315,17 @@ namespace HandyWinget.Common
             }
             try
             {
+                // FIXME: IndexOf failed as winget performed differently in different locales
                 string input = _wingetData.Substring(_wingetData.IndexOf(zH.KeyWGListName));
                 // "名称                                    ID                                           版本                可用    源"
-                
-                var title = input.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)[0];
-                var keys = title.Split(" ");
-                int[] indexes = { };
-                foreach (var key in keys)
-                {
-                    indexes.Append(title.IndexOfAny(key.ToCharArray()));
-                }
+                // "Name    ID  Version ..."
+                //var title = input.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)[0];
+                //var keys = title.Split(" ");
+                //int[] indexes = { };
+                //foreach (var key in keys)
+                //{
+                //    indexes.Append(title.IndexOfAny(key.ToCharArray()));
+                //}
                 var lines = input.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).Skip(2);
                 return lines;
 
@@ -344,15 +347,18 @@ namespace HandyWinget.Common
         {
             //line = Regex.Replace(line, "[ ]{2,}", " ", RegexOptions.IgnoreCase); // remove more than 2 spaces
             //line = Regex.Replace(line, $@".*(?=({Regex.Escape(packageId)}))", "", RegexOptions.IgnoreCase); // remove everythings before package id
-            var temp = line.Trim().Split("\t");
-            string[] lines = { };
-            for (int i = 0; i < temp.Length; i++)
-            {
-                if (temp[i].Length != 0)
-                {
-                    lines.Append(temp[i]);
-                }
-            }
+            //var temp = line.Trim().Split("\t");
+            //string[] lines = { };
+            //for (int i = 0; i < temp.Length; i++)
+            //{
+            //    if (temp[i].Length != 0)
+            //    {
+            //        lines.Append(temp[i]);
+            //    }
+            //}
+            line = Regex.Replace(line, "[ ]{2,}", " ", RegexOptions.IgnoreCase); // remove more than 2 spaces
+            line = Regex.Replace(line, $@".*(?=({Regex.Escape(packageId)}))", "", RegexOptions.IgnoreCase); // remove everythings before package id
+            var lines = line.Split(" ");
 
             //var lines = line.Split(" ");
             if (lines.Count() >= 3) // available version exist
